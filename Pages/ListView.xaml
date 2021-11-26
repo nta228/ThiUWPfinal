@@ -1,0 +1,26 @@
+﻿<Page
+    x:Class="ThiUWP.Pages.ListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ThiUWP.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:entities="using:CloudinaryDotNet"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <DataTemplate x:Key="ListAccountTemplate" x:DataType="entities:Account">
+            <Grid Margin="0,12,0,12" AutomationProperties.Name="{x:Bind}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="150"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <ListView x:Name="MyListView" ItemTemplate="{StaticResource ListAccountTemplate}" Tapped="MyListView_Tapped">
+        </ListView>
+    </Grid>
+</Page>
