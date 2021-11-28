@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using ThiUWP.Entities;
+using ThiUWP.Models;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -23,30 +25,66 @@ namespace ThiUWP.Pages
     /// </summary>
     public sealed partial class AddContactPage : Page
     {
+        private ContactModel contactModel = new ContactModel();
+        private object entityEntry;
+
         public AddContactPage()
         {
             this.InitializeComponent();
+            this.Loaded += AddContacts_Loaded;
         }
-    }
-    public class NotAPhoneAttribute : ValidationAttribute
-    {
-        public override bool IsValid(object value)
+
+        public object Users { get; private set; }
+
+        private void AddContacts_Loaded(object sender, RoutedEventArgs e)
         {
-            var inputValue = value as string;
-            var isValid = true;
-
-            if (!string.IsNullOrEmpty(inputValue))
-            {
-                isValid = inputValue.ToUpperInvariant() != "NumberPhone";
-            }
-
-            return isValid;
+            DatabaseMigration.UpdateDatabase();
         }
-    }
-    public class Model
-    {
-        [NotAPhone(ErrorMessage = "NumberPhone are not allowed.")]
-        public string NumberPhone { get; set; }
-    }
 
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var contact = new Contact()
+            {
+                PhoneNumber = txtPhoneNumber.Text,
+                Name = txtName.Text
+            };
+            var resutl = contactModel.Save(contact);
+            ContentDialog contentDialog = new ContentDialog();
+            if (resutl)
+            {
+                contentDialog.Title = "Actions success";
+                contentDialog.Content = "Contact Saved!";
+                contentDialog.PrimaryButtonText = "Ok";
+                await contentDialog.ShowAsync();
+            }
+            else
+            {
+                contentDialog.Title = "Actions fails";
+                contentDialog.Content = "Please try again!";
+                contentDialog.PrimaryButtonText = "Ok";
+                await contentDialog.ShowAsync();
+            }
+            public class NotAContactAttribute : ValidationAttribute
+            {
+            public override bool IsValid(object value)
+            {
+                var inputValue = value as string;
+                var isValid = true;
+
+                if (!string.IsNullOrEmpty(inputValue))
+                {
+                    isValid = inputValue.ToUpperInvariant() != "Contact";
+                }
+
+                return isValid;
+            }
+            public class Model
+            {
+                [NotAContact(ErrorMessage = "Contacts are not allowed.")]
+                public string FavoriteContact { get; set; }
+            }
+        
+
+    }
 }
+

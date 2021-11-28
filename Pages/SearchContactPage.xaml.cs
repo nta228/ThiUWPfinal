@@ -24,33 +24,42 @@ namespace ThiUWP.Pages
     /// </summary>
     public sealed partial class SearchContactPage : Page
     {
-        private PhoneModel phoneModel = new PhoneModel();
-        public ListView()
+        private ContactModel contactModel = new ContactModel();
+        public SearchContactPage()
         {
             this.InitializeComponent();
-            this.Loaded += Phonelist_Loaded;
+            this.Loaded += SearchContact_Loaded;
         }
 
-        private void Phonelist_Loaded(object sender, RoutedEventArgs e)
+        private void SearchContact_Loaded(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            MyListView.ItemsSource = contactModel.FindAll();
         }
 
-        private void NoteList_Loaded(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ListView.ItemsSource = phoneModel.FindAll();
+            var result = contactModel.SearchByKeyword(txtPhoneNumber.Text);
+
+            MyListView.ItemsSource = result;
+        }
+        private void validateUserEntry()
+        {
+            if (TxtPhoneNumber.Text.Length == 0)
+            {
+                string message = "Contact not found.";
+                string caption = "Error Detected in Input";
+                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+                DialogResult result;
+
+                result = MessageBox.Show(message, caption, buttons);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    // Closes the parent form.
+                    this.Close();
+                }
+            }
         }
 
-        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Pages.SQLite));
-        }
 
-        private void SearchHandle(object sender, RoutedEventArgs e)
-        {
-            var result = phoneModel.SearchByKeyword(txtKeyword.Text);
-            Debug.WriteLine(result);
-            ListView.ItemsSource = result;
-        }
     }
 }
